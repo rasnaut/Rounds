@@ -1,8 +1,7 @@
 ﻿using System;                      // Будем работать с событиями
-using Random = UnityEngine.Random; // И со случайными значениями
 using UnityEngine;
 
-public abstract class Weapon : MonoBehaviour, IShootCountBonusDependent
+public abstract class Weapon : MonoBehaviour, IShootCountBonusDependent, IHitTypeBonusDependent
 {
   [SerializeField] private int    _damage            = 10;    // Урон от оружия
   [SerializeField] private Bullet _bulletPrefab      = null;  // Префаб пули
@@ -17,14 +16,14 @@ public abstract class Weapon : MonoBehaviour, IShootCountBonusDependent
   private bool      _isShootDelayEnd    ; // Флаг окончания задержки
   private bool      _isReloading        ; // Флаг перезарядки
   private int       _shootCount         ; // Количество выстрелов
+  private BulletHit _bulletHit          ; // Поведение при попадании
 
   public Action<int, int> OnBulletsInRowChange; // Событие обновления пуль в магазине
   public Action           OnEndReloading;       // Событие окончания перезарядки
 
   public bool IsReloading => _isReloading; // Свойство с данными о перезарядке  К нему можно будет обращаться из других скриптов
 
-  public void Init()
-  {
+  public void Init() {
     _bulletSpawnPoint = GetComponentInChildren<BulletSpawnPoint>().transform; // Получаем компонент Transform для точки вылета пули
     FillBulletsToRow(); // Вызываем метод FillBulletsToRow()
   }
@@ -47,16 +46,13 @@ public abstract class Weapon : MonoBehaviour, IShootCountBonusDependent
     OnBulletsInRowChange?.Invoke(_currentBulletsInRow, _bulletsInRow);
   }
 
-  public void Reload()
-  {
-    if (_isReloading) { // Если оружие перезаряжается
-      return;           // Выходим из метода
-    }
-    _isReloading = true; // Ставим флаг перезарядки
-  }
+  public void Reload() { _isReloading = true; } // Ставим флаг перезарядки
 
   // Вычисляем текущее количество пуль
   public bool CheckHasBulletsInRow() { return _currentBulletsInRow > 0; } // Если оно > 0, возвращаем true
+
+  // Устанавливаем поведение пули
+  public void SetHit(BulletHit hit) { _bulletHit = hit; } // Присваиваем _bulletHit заданное поведение
 
   // Вызываем метод SpawnBullet()
   protected void DoShoot() {
@@ -74,11 +70,9 @@ public abstract class Weapon : MonoBehaviour, IShootCountBonusDependent
     Vector3 bulletEulerAngles    = bullet.transform.eulerAngles; // Получаем текущие углы поворота созданной пули
     bulletEulerAngles.x         += extraAngle;                   // Прибавляем к углу по X дополнительный угол поворота
     bullet.transform.eulerAngles = bulletEulerAngles;            // Применяем изменённые углы поворота к пуле
-    
-    InitBullet(bullet); // Вызываем метод InitBullet()
-  }
 
-  private void InitBullet(Bullet bullet) {  bullet.SetDamage(_damage); } // Вызываем метод SetDamage() у пули
+    bullet.Init(_damage, _bulletHit);
+  }
 
   private void Update()
   {
@@ -94,8 +88,7 @@ public abstract class Weapon : MonoBehaviour, IShootCountBonusDependent
 
   private void Reloading()
   {
-    if (_isReloading) // Если оружие перезаряжается
-    {
+    if (_isReloading) {                   // Если оружие перезаряжается
       _reloadingTimer += Time.deltaTime;  // Увеличиваем таймер перезарядки На время, прошедшее с последнего кадра
       if (_reloadingTimer >= _reloadingDuration) { // Если прошла продолжительность перезарядки
         FillBulletsToRow();                        // Вызываем метод FillBulletsToRow()

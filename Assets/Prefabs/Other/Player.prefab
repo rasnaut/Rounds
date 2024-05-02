@@ -10,6 +10,7 @@ GameObject:
   m_Component:
   - component: {fileID: 4356790421765556421}
   - component: {fileID: 5097881031204144481}
+  - component: {fileID: 5558417917543013100}
   m_Layer: 0
   m_Name: Weapon
   m_TagString: Untagged
@@ -50,6 +51,20 @@ MonoBehaviour:
   _bulletDelay: 0.2
   _bulletsInRow: 7
   _reloadingDuration: 1
+--- !u!114 &5558417917543013100
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 777745209876218728}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: d13d984ee9e060f4a8d2c5c0741a481b, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  _defaultHitPrefab: {fileID: 6597570747687438593, guid: b4f3266f343f36b4f90f669bba00e59d, type: 3}
+  _explosionHitPrefab: {fileID: 8680598818964007281, guid: dcd90c4976197424b9958a7c54b6bb8c, type: 3}
 --- !u!1 &4437466527520575233
 GameObject:
   m_ObjectHideFlags: 0

@@ -337,6 +337,12 @@ MonoBehaviour:
     _type: 3
   - _chance: 0.1
     _type: 4
+  - _chance: 1
+    _type: 5
+  - _chance: 0.5
+    _type: 6
+  - _chance: 0.1
+    _type: 7
 --- !u!4 &990356199
 Transform:
   m_ObjectHideFlags: 0
@@ -477,7 +483,7 @@ PrefabInstance:
       objectReference: {fileID: 0}
     m_RemovedComponents: []
   m_SourcePrefab: {fileID: 100100000, guid: 91c7e6f7057aad14d810e09d431e52d1, type: 3}
---- !u!1001 &1476736421
+--- !u!1001 &1326952705
 PrefabInstance:
   m_ObjectHideFlags: 0
   serializedVersion: 2
@@ -486,11 +492,15 @@ PrefabInstance:
     m_Modifications:
     - target: {fileID: -6055622035042105237, guid: 267d76e792cac2343a54ce09ef707a6d, type: 3}
       propertyPath: _existingBonusTypes.Array.size
-      value: 1
+      value: 2
       objectReference: {fileID: 0}
     - target: {fileID: -6055622035042105237, guid: 267d76e792cac2343a54ce09ef707a6d, type: 3}
       propertyPath: _existingBonusTypes.Array.data[0]
-      value: 4
+      value: 7
+      objectReference: {fileID: 0}
+    - target: {fileID: -6055622035042105237, guid: 267d76e792cac2343a54ce09ef707a6d, type: 3}
+      propertyPath: _existingBonusTypes.Array.data[1]
+      value: 3
       objectReference: {fileID: 0}
     - target: {fileID: 4437466527520575233, guid: 267d76e792cac2343a54ce09ef707a6d, type: 3}
       propertyPath: m_Name
@@ -502,7 +512,7 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 8750721534449839382, guid: 267d76e792cac2343a54ce09ef707a6d, type: 3}
       propertyPath: m_LocalPosition.x
-      value: -16.22
+      value: -16.075893
       objectReference: {fileID: 0}
     - target: {fileID: 8750721534449839382, guid: 267d76e792cac2343a54ce09ef707a6d, type: 3}
       propertyPath: m_LocalPosition.y
