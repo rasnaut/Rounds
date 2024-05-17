@@ -58,18 +58,26 @@ public class PlayerMovement : CharacterMovement
 
   private void Jumping()
   {
+    PushSpaceButtonProcessing();
+    CheckJumpTimeDuration();
+  }
+
+  private void PushSpaceButtonProcessing()
+  {
     if (Input.GetKeyDown(KeyCode.Space)  // Если нажата клавиша «пробел»
-      && _canJump                        // И герой может прыгать
-      && !_isJumping) {                  // И прыжок сейчас не выполняется
+          && _canJump                        // И герой может прыгать
+          && !_isJumping) {                  // И прыжок сейчас не выполняется
       OnAir(true);
       _jumpTimer = 0;                   // Обнуляем таймер прыжка
 
       _rigidbody.velocity = new Vector3(_rigidbody.velocity.x, _jumpForce, 0f); // Задаём вертикальную скорость для прыжка
     }
-    
+  }
+
+  private void CheckJumpTimeDuration()
+  {
     if (_isJumping) {                    // Если герой в прыжке
       _jumpTimer += Time.fixedDeltaTime; // Увеличиваем таймер прыжка
-
       if (_jumpTimer >= _jumpDuration) { // Если длительность прыжка превышена
         _isJumping = false;              // Ставим флаг «не прыгаю»
       }

@@ -492,11 +492,11 @@ PrefabInstance:
     m_Modifications:
     - target: {fileID: -6055622035042105237, guid: 267d76e792cac2343a54ce09ef707a6d, type: 3}
       propertyPath: _existingBonusTypes.Array.size
-      value: 2
+      value: 1
       objectReference: {fileID: 0}
     - target: {fileID: -6055622035042105237, guid: 267d76e792cac2343a54ce09ef707a6d, type: 3}
       propertyPath: _existingBonusTypes.Array.data[0]
-      value: 7
+      value: 6
       objectReference: {fileID: 0}
     - target: {fileID: -6055622035042105237, guid: 267d76e792cac2343a54ce09ef707a6d, type: 3}
       propertyPath: _existingBonusTypes.Array.data[1]

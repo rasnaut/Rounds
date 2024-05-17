@@ -16,7 +16,7 @@ public class DefaultBulletHit : BulletHit
 
       // Создаём экземпляр эффекта попадания
       // В точке столкновения с нужным вращением
-      GameObject hitSample = GameObject.Instantiate(HitPrefab, collision.contacts[0].point, hitRotation);
+      GameObject.Instantiate(HitPrefab, collision.contacts[0].point, hitRotation);
     }
   }
 }
