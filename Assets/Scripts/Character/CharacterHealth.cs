@@ -24,9 +24,8 @@ public abstract class CharacterHealth : CharacterPart
   [PunRPC]
   protected void RPCAddHealthPoints(int value)
   {
-    if (!PhotonView.IsMine // НОВОЕ: Если у игрока нет PhotonView
-      || _isDead) {        // Или он мёртв
-      return;              // Выходим из метода
+    if ( _isDead ) { // Или он мёртв
+      return;      // Выходим из метода
     }
     
     _healthPoints += value;                            // Увеличиваем значение здоровья на value

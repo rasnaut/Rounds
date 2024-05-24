@@ -68,3 +68,4 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   _playerPrefab: {fileID: -724054343273003294, guid: 267d76e792cac2343a54ce09ef707a6d, type: 3}
+  _playerGamePanelPrefab: {fileID: 5688500667369267340, guid: a5a72490469b91040bb3003c13bc0e26, type: 3}

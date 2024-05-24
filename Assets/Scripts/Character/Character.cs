@@ -4,11 +4,14 @@ public abstract class Character : MonoBehaviour
 {
   private CharacterPart[] _parts; // Массив частей персонажа
 
-  // Вызываем иницилизацию при старте
-  private void Start() { Init(); }
-  
-  // Заполняем ссылки на компоненты
-  private void Init()
+  public void Activate() {
+    for (int i = 0; i < _parts.Length; i++) { // Проходим по всем частям персонажа
+      _parts[i].Activate();                   // Активируем каждую
+    }
+  }
+  private void Start() { Init(); } // Вызываем иницилизацию при старте
+
+  public void Init() // Заполняем ссылки на компоненты
   {
     _parts = GetComponents<CharacterPart>(); // Получаем компоненты частей персонажа
 
@@ -44,7 +47,7 @@ public abstract class Character : MonoBehaviour
   }
 
   // Останавливаем персонажа
-  private void Stop()
+  public void Stop()
   {
     for (int i = 0; i < _parts.Length; i++) { // Проходим по всем частям 
       _parts[i].Stop();                       // Вызываем у каждой метод Stop()

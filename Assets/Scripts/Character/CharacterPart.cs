@@ -21,10 +21,12 @@ public abstract class CharacterPart : MonoBehaviourPunCallbacks
 
   public void Action()
   {
-    if(IsActive)
-    {
+    if(IsActive) {
       OnAction();
     }
+  }
+  public void Activate() {
+    IsActive = true;      // Делаем часть активной
   }
   protected PhotonView PhotonView // Свойство для доступа к _photonView Из дочерних классов
   {
