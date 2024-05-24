@@ -1,5 +1,6 @@
 ﻿using System;                      // Будем работать с событиями
 using UnityEngine;
+using Photon.Pun;
 
 public abstract class Weapon : MonoBehaviour, IShootCountBonusDependent, IHitTypeBonusDependent
 {
@@ -65,8 +66,11 @@ public abstract class Weapon : MonoBehaviour, IShootCountBonusDependent, IHitTyp
   // Создаём экземпляр префаба пули
   private void SpawnBullet(Bullet prefab, Transform spawnPoint, float extraAngle)
   {
-    Bullet bullet = Instantiate(prefab, spawnPoint.position, spawnPoint.rotation); // В точке появления с теми же параметрами
-    
+    // НОВОЕ: Создаём сетевой объект пули через PhotonNetwork
+    GameObject buleltGO = PhotonNetwork.Instantiate(prefab.name, spawnPoint.position, spawnPoint.rotation);
+
+    Bullet bullet = buleltGO.GetComponent<Bullet>(); // НОВОЕ: Получаем компонент Bullet
+
     Vector3 bulletEulerAngles    = bullet.transform.eulerAngles; // Получаем текущие углы поворота созданной пули
     bulletEulerAngles.x         += extraAngle;                   // Прибавляем к углу по X дополнительный угол поворота
     bullet.transform.eulerAngles = bulletEulerAngles;            // Применяем изменённые углы поворота к пуле

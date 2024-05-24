@@ -13,7 +13,7 @@ public class PlayerAiming : CharacterAiming
   // Вызывается каждый кадр
   private void Update()
   {
-    if (!IsActive) { // Если игрок не активен
+    if (!PhotonView || !PhotonView.IsMine || !IsActive) { // Если игрок не активен
       return; // Выходим из метода
     }
     Aiming(); // Вызываем метод Aiming()

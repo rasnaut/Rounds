@@ -1,9 +1,11 @@
 ﻿using System;
-using UnityEngine;
+using Photon.Pun;
 
-public abstract class CharacterPart : MonoBehaviour
+public abstract class CharacterPart : MonoBehaviourPunCallbacks
 {
   protected bool IsActive; // Флаг активности части
+
+  private PhotonView _photonView; // Переменная для работы с сетевым представлением объекта
 
   // Инициализируем переменные
   public void Init() {
@@ -24,7 +26,15 @@ public abstract class CharacterPart : MonoBehaviour
       OnAction();
     }
   }
-  
+  protected PhotonView PhotonView // Свойство для доступа к _photonView Из дочерних классов
+  {
+    get {
+      if (!_photonView) {                         // Если _photonView не инициализирована
+        _photonView = GetComponent<PhotonView>(); // Получаем компонент PhotonView
+      }
+      return _photonView; // Возвращаем полученное значение
+    } 
+  }
   protected virtual void OnInit() { } // Защищённый виртуальный метод OnInit()
   protected virtual void OnStop() { } // Защищённый виртуальный метод OnStop()
   protected virtual void OnAction() { } // Защищённый виртуальный метод OnStop()

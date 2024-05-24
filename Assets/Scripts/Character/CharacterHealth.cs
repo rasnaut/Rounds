@@ -1,5 +1,6 @@
 ﻿using System;
 using UnityEngine;
+using Photon.Pun;
 
 public abstract class CharacterHealth : CharacterPart
 {
@@ -14,9 +15,20 @@ public abstract class CharacterHealth : CharacterPart
   // Добавляем очки здоровья
   public void AddHealthPoints(int value)
   {
-    // Если персонаж мёртв
-    if (_isDead) { return; } // Выходим из метода
-     
+    // Вызываем метод RPCAddHealthPoints()
+    // На всех подключённых клиентах
+    PhotonView.RPC(nameof(RPCAddHealthPoints), RpcTarget.All, value);
+  }
+  // Специальный атрибут
+  // Для синхронизации действий игроков
+  [PunRPC]
+  protected void RPCAddHealthPoints(int value)
+  {
+    if (!PhotonView.IsMine // НОВОЕ: Если у игрока нет PhotonView
+      || _isDead) {        // Или он мёртв
+      return;              // Выходим из метода
+    }
+    
     _healthPoints += value;                            // Увеличиваем значение здоровья на value
     Mathf.Clamp(_healthPoints, 0, _startHealthPoints); // Проверяем, что здоровье в пределах от нуля до заданного изначально
     OnAddHealthPoints?.Invoke();                       // Вызываем событие OnAddHealthPoints

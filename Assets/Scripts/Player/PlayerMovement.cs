@@ -20,6 +20,12 @@ public class PlayerMovement : CharacterMovement
   {
     _rigidbody = GetComponentInChildren<Rigidbody>(); // Получаем Rigidbody из дочерних объектов
    _mainCamera = Camera.main;                         // Присваиваем _mainCamera объект камеры
+
+    if (!PhotonView         // НОВОЕ: Если у объекта нет компонента PhotonView
+     || !PhotonView.IsMine) // Или он не принадлежит текущему игроку
+    {
+      Destroy(_rigidbody); // Уничтожаем компонент физики на персонаже Так как физика врага будет работать на его клиенте
+    }
   }
   
   protected override void OnAction()
@@ -27,7 +33,13 @@ public class PlayerMovement : CharacterMovement
     Movement(); // Вызываем метод Movement()
     Jumping();  // Вызываем метод Jumping()
   }
-  private void FixedUpdate() {
+  private void FixedUpdate() 
+  {
+    if ( !PhotonView         // НОВОЕ: Если у объекта нет компонента PhotonView
+      || !PhotonView.IsMine  // Или он не принадлежит текущему игроку
+      || !_rigidbody) {      // Или у него нет компонента Rigidbody
+      return; // НОВОЕ: Выходим из метода
+    }
     ExtraGravity(); // Вызываем метод ExtraGravity()
     base.Action();
   }
@@ -93,7 +105,7 @@ public class PlayerMovement : CharacterMovement
   private void Update()
   {
     // Если игрок не активен
-    if (!IsActive) {
+    if (!PhotonView || !PhotonView.IsMine || !IsActive) {
       // Выходим из метода
       return;
     }

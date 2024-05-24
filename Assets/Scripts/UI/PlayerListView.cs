@@ -36,10 +36,6 @@ public class PlayerListView : MonoBehaviour
   }
   public void ClearContainer()
   {
-    // Проходим по списку элементов в обратном порядке
-    for (int i = _playerListElements.Count - 1; i >= 0; i--) {
-      Destroy(_playerListElements[i].gameObject); // Удаляем объект элемента из игры
-    }
     _playerListElements.Clear(); // Очищаем список элементов
   }
 }

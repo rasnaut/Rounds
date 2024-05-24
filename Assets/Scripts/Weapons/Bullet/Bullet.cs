@@ -1,4 +1,5 @@
 ﻿using UnityEngine;
+using Photon.Pun;
 
 public class Bullet : MonoBehaviour
 {
@@ -6,8 +7,9 @@ public class Bullet : MonoBehaviour
   [SerializeField] private float      _impulse         = 30f ; // Импульс (сила толчка) пули
   [SerializeField] private float      _lifeTime        = 15f ; // Максимальное время отображения пули
 
-  private int _damage;    // Урон от пули
-  private BulletHit _hit; // Поведение при попадании
+  private int         _damage;    // Урон от пули
+  private BulletHit   _hit;       // Поведение при попадании
+  private PhotonView _photonView; // Переменная для работы с сетевым представлением объекта
 
   public void Init(int damage, BulletHit hit) {
     Rigidbody rigidbody = GetComponent<Rigidbody>(); // Получаем Rigidbody пули
@@ -22,7 +24,20 @@ public class Bullet : MonoBehaviour
   }
 
   private void Update() {
+    if (!_photonView.IsMine) { // НОВОЕ: Если у игрока нет PhotonView
+      return; // НОВОЕ: Выходим из метода
+    }
     ReduceLifeTime(); // Вызываем метод ReduceLifeTime()
+  }
+  private void Awake()
+  {
+    _photonView = GetComponent<PhotonView>(); // Получаем компонент PhotonView
+    if (!_photonView.IsMine) {                // Если у игрока его нет
+      // Уничтожаем компонент физики на персонаже
+      // Чтобы физика пули отрабатывалась на клиенте, который создал пулю
+      // Её позиция будет синхронизироваться с другими клиентами
+      Destroy(GetComponent<Rigidbody>());
+    }
   }
 
   private void ReduceLifeTime()
@@ -36,6 +51,9 @@ public class Bullet : MonoBehaviour
 
   private void OnCollisionEnter(Collision collision)
   {
+    if (!_photonView.IsMine) { // НОВОЕ: Если у игрока нет PhotonView
+        return;                // НОВОЕ: Выходим из метода
+    }
     if (collision.collider) {         // Если пуля столкнулась с коллайдером
       _hit.Hit(collision, transform); // Вызываем у поведения метод Hit()
       DestroyBullet();                // Вызываем метод DestroyBullet()
@@ -43,6 +61,7 @@ public class Bullet : MonoBehaviour
   }
 
   private void DestroyBullet() {
-    Destroy(gameObject); // Вызываем метод Destroy() для пули
+    // НОВОЕ: Удаляем объект пули через PhotonNetwork
+    PhotonNetwork.Destroy(gameObject);
   }
 }

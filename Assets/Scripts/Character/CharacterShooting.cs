@@ -16,7 +16,7 @@
   }
   private void Update() {
     // Если персонаж не активен
-    if (!IsActive) {
+    if (!PhotonView || !PhotonView.IsMine || !IsActive) {
       return; // Выходим из метода
     }
     Shooting();  // Вызываем метод Shooting()

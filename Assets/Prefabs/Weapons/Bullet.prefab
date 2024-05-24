@@ -11,6 +11,8 @@ GameObject:
   - component: {fileID: 3125701140836653170}
   - component: {fileID: -5071972617298325988}
   - component: {fileID: 167459573740403257}
+  - component: {fileID: 2973552239762213738}
+  - component: {fileID: 2917373861942922650}
   m_Layer: 6
   m_Name: Bullet
   m_TagString: Untagged
@@ -65,6 +67,45 @@ MonoBehaviour:
   _objectHitPrefab: {fileID: 6597570747687438593, guid: b4f3266f343f36b4f90f669bba00e59d, type: 3}
   _impulse: 23
   _lifeTime: 15
+--- !u!114 &2973552239762213738
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 2689787155258034914}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 627855c7f81362d41938ffe0b1475957, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  m_SynchronizePosition: 1
+  m_SynchronizeRotation: 1
+  m_SynchronizeScale: 0
+  m_UseLocal: 1
+--- !u!114 &2917373861942922650
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 2689787155258034914}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: aa584fbee541324448dd18d8409c7a41, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  ObservedComponentsFoldoutOpen: 1
+  Group: 0
+  prefixField: -1
+  Synchronization: 3
+  OwnershipTransfer: 0
+  observableSearch: 2
+  ObservedComponents:
+  - {fileID: 2973552239762213738}
+  sceneViewId: 0
+  InstantiationId: 0
+  isRuntimeInstantiated: 0
 --- !u!1 &8652050062009025290
 GameObject:
   m_ObjectHideFlags: 0
