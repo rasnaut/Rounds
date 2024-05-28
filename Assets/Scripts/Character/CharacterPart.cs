@@ -29,14 +29,13 @@ public abstract class CharacterPart : MonoBehaviourPunCallbacks
   public void Activate() {
     IsActive = true;      // Делаем часть активной
   }
-  protected PhotonView PhotonView // Свойство для доступа к _photonView Из дочерних классов
+  public PhotonView PhotonView // Свойство для доступа к _photonView Из дочерних классов
   {
     get {
       if (!_photonView) {                         // Если _photonView не инициализирована
         _photonView = GetComponent<PhotonView>(); // Получаем компонент PhotonView
       }
-      if (!_photonView)
-        Debug.WriteLine("PhotonView not exist!");
+      
       return _photonView; // Возвращаем полученное значение
     } 
   }

@@ -22,6 +22,7 @@ public class MainMenuStateChanger : BaseStateChanger
     roomScreen.PlayerListView.SetPlayers(PhotonNetwork.PlayerList);     // НОВОЕ: Задаём список игроков
 
     RefreshPlayButton(); // НОВОЕ: Вызываем метод RefreshPlayButton()
+    RefreshRoomVisible();
   }
   public override void OnCreateRoomFailed(short returnCode, string message)
   {
@@ -119,6 +120,7 @@ public class MainMenuStateChanger : BaseStateChanger
     roomScreen.PlayerListView.AddPlayer(newPlayer);                    // Добавляем игрока
 
     RefreshPlayButton(); // Вызываем метод RefreshPlayButton()
+    RefreshRoomVisible();
   }
   
   // Вызывается при выходе игрока из комнаты
@@ -128,17 +130,30 @@ public class MainMenuStateChanger : BaseStateChanger
     roomScreen.PlayerListView.RemovePlayer(otherPlayer); // Удаляем игрока
 
     RefreshPlayButton(); // Вызываем метод RefreshPlayButton()
+    RefreshRoomVisible();
   }
   
   // Вызывается при сетевой смене игрока (мастер-клиента)
   public override void OnMasterClientSwitched(Photon.Realtime.Player newMasterClient)
   {
     RefreshPlayButton(); // Вызываем метод RefreshPlayButton()
+    RefreshRoomVisible();
   }
   private void RefreshPlayButton() // Обновляем кнопку «Начать игру»
   {
     bool isActive = PhotonNetwork.IsMasterClient  // Кнопка «Начать игру» активна только на мастер-клиенте
                  && PhotonNetwork.CurrentRoom.PlayerCount == PhotonNetwork.CurrentRoom.MaxPlayers; // И когда комната не пустая
     ScreensController.GetScreen<RoomScreen>().SetActivePlayButton(isActive);
+  }
+  private void RefreshRoomVisible() // Обновляем видимость текущей комнаты в сети
+  {
+    // Проверяем, что текущий клиент — главный (мастер-клиент)
+    if (PhotonNetwork.IsMasterClient)
+    {
+      // Устанавливаем видимость комнаты в зависимости от количества игроков
+      // Если количество игроков в комнате меньше максимально допустимого, делаем комнату видимой
+      // В противном случае (если комната полная), она становится невидимой
+      PhotonNetwork.CurrentRoom.IsVisible = PhotonNetwork.CurrentRoom.PlayerCount < PhotonNetwork.CurrentRoom.MaxPlayers;
+    }
   }
 }   

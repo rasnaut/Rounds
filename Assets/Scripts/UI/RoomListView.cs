@@ -14,9 +14,12 @@ public class RoomListView : MonoBehaviour
   {
     ClearContainer(); // Вызываем метод ClearContainer()
 
-    for (int i = 0; i < roomList.Count; i++) {  // Проходим по списку комнат
-      if (roomList[i].RemovedFromList) {        // Если текущий элемент удалён из списка
-        continue;                               // Переходим к новому
+    for (int i = 0; i < roomList.Count; i++)  // Проходим по списку комнат
+    {  
+      // Если текущий элемент удалён из списка
+      if (roomList[i].RemovedFromList || !roomList[i].IsVisible)
+      {        
+        continue; // Переходим к новому
       }
       
       RoomListElement element = Instantiate(_roomListElementPrefab, _roomListContainer); // Создаём префаб элемента списка комнат и Добавляем его в контейнер

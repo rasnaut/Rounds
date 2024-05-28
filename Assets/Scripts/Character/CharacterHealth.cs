@@ -7,7 +7,7 @@ public abstract class CharacterHealth : CharacterPart
   [SerializeField] private int _startHealthPoints = 100; // Стартовое количество здоровья
 
   public Action                  OnDie;             // Событие при смерти
-  public Action<CharacterHealth> OnDieWithObject;   // Доп. событие при смерти Со ссылкой на метод с параметром типа CharacterHealth
+  public static Action<CharacterHealth> OnDieWithObject;   // Доп. событие при смерти Со ссылкой на метод с параметром типа CharacterHealth
   public Action                  OnAddHealthPoints; // Событие при изменении очков здоровья
 
   private int  _healthPoints; // Очки здоровья персонажа

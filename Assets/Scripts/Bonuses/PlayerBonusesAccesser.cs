@@ -23,6 +23,21 @@ public class PlayerBonusesAccesser
     // Как пользовательские свойства игрока в Photon
     PhotonNetwork.LocalPlayer.SetCustomProperties(hashtable);
   }
+  public void ClearBonuses() // Удаляем бонусы
+  {
+    // Записываем пользовательские свойства локального игрока
+    // В переменную playerCustomProperties
+    ExitGames.Client.Photon.Hashtable playerCustomProperties = PhotonNetwork.LocalPlayer.CustomProperties;
+
+    // Проходим по этим свойствам
+    for (int i = 0; i < playerCustomProperties.Count; i++)
+    {
+      // Устанавливаем в каждое значение null
+      playerCustomProperties[$"BonusType{i}"] = null;
+    }
+    // Обновляем пользовательские свойства локального игрока
+    PhotonNetwork.LocalPlayer.SetCustomProperties(playerCustomProperties);
+  }
   private void RefreshExistingBonuses() // Обновляем список собранных бонусов
   {
     _existingBonusTypes.Clear();   // Очищаем его

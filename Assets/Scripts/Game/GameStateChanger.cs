@@ -53,6 +53,28 @@ public class GameStateChanger : BaseStateChanger
 
     // Обрабатываем событие OnCountDownEnd
     countDownScreen.OnCountDownEnd += StartGame; // Вызываем метод StartGame()
+
+    // Получаем экран EndRoundScreen
+    EndRoundScreen endRoundScreen = ScreensController.GetScreen<EndRoundScreen>();
+
+    // Обрабатываем событие OnGiveUpButtonClick
+    // Вызываем метод LeaveGame()
+    endRoundScreen.OnGiveUpButtonClick += LeaveGame;
+
+    // Обрабатываем событие OnPlayButtonClick
+    // Вызываем метод NextRound()
+    endRoundScreen.OnPlayButtonClick += NextRound;
+
+    // Получаем экран EndGameScreen
+    EndGameScreen endGameScreen = ScreensController.GetScreen<EndGameScreen>();
+
+    // Обрабатываем событие OnLeaveButtonClick
+    // Вызываем метод LeaveGame()
+    endGameScreen.OnLeaveButtonClick += LeaveGame;
+
+    // Обрабатываем событие OnDieWithObject
+    // Вызываем метод SetLoser()
+    CharacterHealth.OnDieWithObject += SetLoser;
   }
   private void BonusSelected(BonusType? selectedType) // Вызывается при выборе бонуса
   { 
@@ -191,5 +213,80 @@ public class GameStateChanger : BaseStateChanger
       // Отписываемся от события OnCountDownEnd
       countDownScreen.OnCountDownEnd -= StartGame;
     }
+    // Получаем экран EndGameScreen
+    EndGameScreen endGameScreen = ScreensController.GetScreen<EndGameScreen>();
+
+    // Если он существует
+    if (endGameScreen)
+    {
+      // Отписываемся от события OnLeaveButtonClick
+      endGameScreen.OnLeaveButtonClick -= LeaveGame;
+    }
+    // Отписываемся от события OnDieWithObject
+    CharacterHealth.OnDieWithObject -= SetLoser;
+  }
+  public override void OnLeftRoom() // Вызывается при выходе из комнаты
+  {
+    // Удаляем бонусы
+    _playerBonusAccesser.ClearBonuses();
+
+    // Загружаем главное меню
+    ScenesLoader.LoadMainMenu();
+  }
+  
+  // Вызывается при выходе указанного игрока из комнаты
+  public override void OnPlayerLeftRoom(Photon.Realtime.Player otherPlayer)
+  {
+    // Если вышедший игрок — это не локальный игрок
+    if (otherPlayer != PhotonNetwork.LocalPlayer)
+    {
+      // Показываем экран EndGameScreen
+      ScreensController.ShowScreen<EndGameScreen>();
+    }
+  }
+  private void LeaveGame() // Завершаем игру
+  {
+    // Выходим из комнаты Photon
+    PhotonNetwork.LeaveRoom();
+
+    // Показываем экран LoadingScreen
+    ScreensController.ShowScreen<LoadingScreen>(false);
+  }
+  // Переходим на следующий раунд
+  private void NextRound()
+  {
+    // Загружаем сцену этого раунда
+    ScenesLoader.LoadGame();
+  }
+  // Устанавливаем проигравшего
+  private void SetLoser(CharacterHealth health)
+  {
+    // Отписываемся от события OnDieWithObject
+    CharacterHealth.OnDieWithObject -= SetLoser;
+
+    // Отправляем эти данные с помощью RPC
+    _photonView.RPC(nameof(RPCSetLoser), RpcTarget.All, health.PhotonView.Controller.ActorNumber);
+  }
+  // Специальный атрибут
+  // Для синхронизации действий игроков
+  [PunRPC]
+
+  // Устанавливаем проигравшего по сети
+  private void RPCSetLoser(int loseActorNumber)
+  {
+    // Останавливаем действия локального игрока
+    _localPlayerSpawner.StopPlayer();
+
+    // Проверяем, равен ли номер локального игрока
+    // Номеру, который получили в методе
+    bool lose = PhotonNetwork.LocalPlayer.ActorNumber == loseActorNumber;
+
+    // Показываем экран EndRoundScreen
+    EndRoundScreen endRoundScreen = ScreensController.ShowScreen<EndRoundScreen>();
+
+    // Устанавливаем результат игры
+    // (Проиграл ли локальный игрок или нет)
+    // На экране окончания раунда
+    endRoundScreen.SetResult(lose);
   }
 }

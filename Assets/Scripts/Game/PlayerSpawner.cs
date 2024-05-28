@@ -5,6 +5,8 @@ public class PlayerSpawner : MonoBehaviour
 {
   [SerializeField] private Player          _playerPrefab;
   [SerializeField] private PlayerGamePanel _playerGamePanelPrefab; // НОВОЕ: Префаб шкалы здоровья игрока
+                                                                   
+  public Character LocalPlayer => _localPlayer; // Свойство для доступа к объекту локального игрока
 
   private PhotonView _photonView;
   private Location   _location;
@@ -21,6 +23,7 @@ public class PlayerSpawner : MonoBehaviour
     }
   }
   public void ActivatePlayer() { _localPlayer.Activate(); }
+  public void StopPlayer    () { _localPlayer.Stop();     } // Вызываем у него метод Stop()
   private void SpawnPlayer()
   {
     PlayerSpawnPoint spawnPoint = _location.SpawnPoints[PhotonNetwork.LocalPlayer.ActorNumber - 1];
