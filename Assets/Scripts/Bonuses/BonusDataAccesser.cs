@@ -11,8 +11,12 @@ public class BonusDataAccesser : MonoBehaviour
     List<BonusData> possibleData  = new List<BonusData>(); // Создаём пустой список для хранения возможных бонусов
     List<BonusType> existingTypes = new List<BonusType>(existingBonusTypes); // Копируем типы собранных бонусов
 
+    // НОВОЕ: Вызываем метод AddLowLevelBonuses()
+    // Передаём в него список типов собранных бонусов
+    AddLowLevelBonuses(existingTypes);
+
     for (int i = 0; i < targetCount; i++) {        // Проходим по циклу длиной в количество требуемых бонусов
-      if (existingBonusTypes.Count + possibleData.Count == _data.Length) {// Если все бонусы уже используются
+      if (existingTypes.Count == _data.Length) {   // Если все бонусы уже используются
         break; // Выходим из цикла
       }
 
@@ -58,5 +62,42 @@ public class BonusDataAccesser : MonoBehaviour
       sumChance += data[i].Chance;         // Добавляем шанс каждого бонуса к общему шансу
     }
     return sumChance; // Возвращаем сумму шансов всех бонусов
+  }
+  private void AddLowLevelBonuses(List<BonusType> bonuses) // Добавляем бонусы низшего уровня
+  {
+    // Объявляем переменную типа BonusData
+    // Для хранения данных о бонусах
+    BonusData data;
+
+    // Проходим по всем бонусам в обратном порядке
+    for (int i = bonuses.Count - 1; i >= 0; i--)
+    {
+      // Получаем данные о каждом бонусе по его типу
+      data = GetBonusDataByType(bonuses[i]);
+
+      // Проходим по массиву всех данных
+      for (int j = 0; j < _data.Length; j++)
+      {
+        // Если этого типа бонуса нет в списке
+        // И он принадлежит той же группе
+        // И у него меньший уровень
+        if (!bonuses.Contains(_data[j].Type) && _data[j].Group == data.Group && _data[j].Level < data.Level)
+        {
+          // Добавляем этот тип бонуса в список
+          bonuses.Add(_data[j].Type);
+        }
+      }
+    }
+  }
+  private BonusData GetBonusDataByType(BonusType type) // Получаем данные о бонусе по его типу
+  {
+    for (int i = 0; i < _data.Length; i++) // Проходим по всем бонусам
+    {
+      // Если тип очередного бонуса совпадает с указанным
+      if (_data[i].Type == type) {
+        return _data[i]; // Возвращаем данные этого бонуса
+      }
+    }
+    return null; // Возвращаем пустое значение
   }
 }

@@ -4,7 +4,7 @@ using UnityEngine.SceneManagement; // Работаем со сценами Unity
 public class ScenesLoader 
 {
   public const string MainMenuSceneName = "MainMenuScene"; // Константа с названием сцены главного меню
-  public const string GameSceneName     = "SampleScene";   // Константа с названием сцены игры
+  public const string GameSceneName     = "GameScene";   // Константа с названием сцены игры
 
   public static void LoadMainMenu() // Загружаем сцену главного меню
   {

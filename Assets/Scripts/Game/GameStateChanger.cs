@@ -6,9 +6,10 @@ public class GameStateChanger : BaseStateChanger
   [SerializeField] private PlayerSpawner _playerSpawnerPrefab; // Префаб объекта появления игроков
   [SerializeField] private Location      _location           ; // Игровая локация
 
+  public static int ReadyCount;    // Количество игроков, готовых к игре
+
   private PhotonView    _photonView        ;    // Переменная для работы с сетевым представлением объекта
   private PlayerSpawner _localPlayerSpawner;    // Локальный объект появления игроков
-  private int           _readyCount        ;    // Количество игроков, готовых к игре
   private int           _locationSpawnCount;    // Количество инициализированных локаций
   private const int BonusForChooseCount = 3;    // Константа, задающая количество бонусов для выбора
   private BonusDataAccesser _bonusDataAccesser; // Объект типа BonusDataAccesser
@@ -23,7 +24,7 @@ public class GameStateChanger : BaseStateChanger
   }
   protected override void OnInit()
   {
-    SetReadyCount(0);                           // Обнуляем начальное количество готовых игроков
+    RefreshWaitScreen();
     _locationSpawnCount = 0;                    // Инициализируем счётчик появлений локаций значением 0
     
     // НОВОЕ: Находим компонент BonusDataAccesser
@@ -93,18 +94,27 @@ public class GameStateChanger : BaseStateChanger
   [PunRPC] // Специальный атрибут Для синхронизации действий игроков
   private void RPCSendReady()
   {
-    SetReadyCount(_readyCount + 1); // Увеличиваем число готовых игроков на одного
-    if (_readyCount >= PhotonNetwork.CurrentRoom.MaxPlayers) { // Если это число >= максимальному числу игроков в комнате
-      PrepareGame();                                           // Вызываем метод PrepareGame()
+    // НОВОЕ: Увеличиваем счётчик готовых игроков на 1
+    ReadyCount++;
+
+    // НОВОЕ: Вызываем метод RefreshWaitScreen()
+    RefreshWaitScreen();
+
+    // НОВОЕ: Заменили приватную переменную на публичную
+    if (ReadyCount >= PhotonNetwork.CurrentRoom.MaxPlayers)
+    {
+      // НОВОЕ: Обнуляем счётчик готовых игроков
+      ReadyCount = 0;
+
+      PrepareGame();
     }
   }
-  private void SetReadyCount(int value)
+  private void RefreshWaitScreen()
   {
-    _readyCount = value; // Устанавливаем текущее число готовых игроков
-
-    // Вызываем метод RefreshWaitScreen()
-    // Передаём в него текущее и максимальное число игроков
-    RefreshWaitScreen(_readyCount, PhotonNetwork.CurrentRoom.MaxPlayers);
+    // Вызываем перегруженный одноимённый метод
+    // Передаём в него текущее число готовых игроков
+    // И максимальное число игроков в текущей комнате
+    RefreshWaitScreen(ReadyCount, PhotonNetwork.CurrentRoom.MaxPlayers);
   }
   private void RefreshWaitScreen(int current, int max)
   {

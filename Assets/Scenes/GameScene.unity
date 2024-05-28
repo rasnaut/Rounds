@@ -123,6 +123,51 @@ NavMeshSettings:
     debug:
       m_Flags: 0
   m_NavMeshData: {fileID: 0}
+--- !u!1 &70831951
+GameObject:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  serializedVersion: 6
+  m_Component:
+  - component: {fileID: 70831953}
+  - component: {fileID: 70831952}
+  m_Layer: 0
+  m_Name: RoomController
+  m_TagString: Untagged
+  m_Icon: {fileID: 0}
+  m_NavMeshLayer: 0
+  m_StaticEditorFlags: 0
+  m_IsActive: 1
+--- !u!114 &70831952
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 70831951}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 64ab8de9621b1f841aa813edca9b4711, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  _playerSpawner: {fileID: 1225606226}
+--- !u!4 &70831953
+Transform:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 70831951}
+  m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
+  m_LocalPosition: {x: 0, y: 0, z: 0}
+  m_LocalScale: {x: 1, y: 1, z: 1}
+  m_ConstrainProportionsScale: 0
+  m_Children: []
+  m_Father: {fileID: 0}
+  m_RootOrder: 8
+  m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
 --- !u!1 &705507993
 GameObject:
   m_ObjectHideFlags: 0
@@ -448,24 +493,36 @@ MonoBehaviour:
   - _chance: 1
     _type: 2
     _title: "\u0414\u0432\u043E\u0439\u043D\u043E\u0439 \u0432\u044B\u0441\u0442\u0440\u0435\u043B"
+    _group: 0
+    _level: 0
   - _chance: 0.5
     _type: 3
     _title: "\u0422\u0440\u043E\u0439\u043D\u043E\u0439 \u0432\u044B\u0441\u0442\u0440\u0435\u043B"
+    _group: 0
+    _level: 0
   - _chance: 0.1
     _type: 4
     _title: "\u0427\u0435\u0442\u0432\u0435\u0440\u043D\u043E\u0439 \u0432\u044B\u0441\u0442\u0440\u0435\u043B"
+    _group: 0
+    _level: 0
   - _chance: 1
     _type: 5
     _title: "\u041C\u0430\u043B\u0435\u043D\u044C\u043A\u0438\u0435 \u0432\u0437\u0440\u044B\u0432\u043D\u044B\u0435
       \u043F\u0430\u0442\u0440\u043E\u043D\u044B"
+    _group: 0
+    _level: 0
   - _chance: 0.5
     _type: 6
     _title: "\u0421\u0440\u0435\u0434\u043D\u0438\u0435 \u0432\u0437\u0440\u044B\u0432\u043D\u044B\u0435
       \u043F\u0430\u0442\u0440\u043E\u043D\u044B"
+    _group: 0
+    _level: 0
   - _chance: 0.1
     _type: 7
     _title: "\u0411\u043E\u043B\u044C\u0448\u0438\u0435 \u0432\u0437\u0440\u044B\u0432\u043D\u044B\u0435
       \u043F\u0430\u0442\u0440\u043E\u043D\u044B"
+    _group: 0
+    _level: 0
 --- !u!4 &990356199
 Transform:
   m_ObjectHideFlags: 0
@@ -594,6 +651,10 @@ PrefabInstance:
     - target: {fileID: 4437466527520575233, guid: 267d76e792cac2343a54ce09ef707a6d, type: 3}
       propertyPath: m_Name
       value: Player
+      objectReference: {fileID: 0}
+    - target: {fileID: 7336467092556759158, guid: 267d76e792cac2343a54ce09ef707a6d, type: 3}
+      propertyPath: sceneViewId
+      value: 3
       objectReference: {fileID: 0}
     - target: {fileID: 8750721534449839382, guid: 267d76e792cac2343a54ce09ef707a6d, type: 3}
       propertyPath: m_RootOrder

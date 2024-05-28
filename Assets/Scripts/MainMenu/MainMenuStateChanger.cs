@@ -23,6 +23,7 @@ public class MainMenuStateChanger : BaseStateChanger
 
     RefreshPlayButton(); // НОВОЕ: Вызываем метод RefreshPlayButton()
     RefreshRoomVisible();
+    GameStateChanger.ReadyCount = 0;
   }
   public override void OnCreateRoomFailed(short returnCode, string message)
   {
