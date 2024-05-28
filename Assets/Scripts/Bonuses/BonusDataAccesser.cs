@@ -5,8 +5,27 @@ public class BonusDataAccesser : MonoBehaviour
 {
   [SerializeField] private BonusData[] _data; // Массив данных о доступных бонусах
 
+  // Получаем список случайных бонусов
+  public List<BonusData> GetRandomBonuses(List<BonusType> existingBonusTypes, int targetCount)
+  {
+    List<BonusData> possibleData  = new List<BonusData>(); // Создаём пустой список для хранения возможных бонусов
+    List<BonusType> existingTypes = new List<BonusType>(existingBonusTypes); // Копируем типы собранных бонусов
+
+    for (int i = 0; i < targetCount; i++) {        // Проходим по циклу длиной в количество требуемых бонусов
+      if (existingBonusTypes.Count + possibleData.Count == _data.Length) {// Если все бонусы уже используются
+        break; // Выходим из цикла
+      }
+
+      // Получаем случайный бонус Который не входит в список уже собранных
+      BonusData randomBonus = GetRandomBonus(existingTypes); 
+      existingTypes.Add(randomBonus.Type);
+      possibleData .Add(randomBonus); // Добавляем бонус в список
+    }
+    return possibleData; // Возвращаем список возможных бонусов
+  }
+
   // Получаем случайный бонус Проверив, какие бонусы игрок уже собрал
-  public BonusData GetRandomBonus(List<BonusType> existingBonusTypes)
+  private BonusData GetRandomBonus(List<BonusType> existingBonusTypes)
   {
     List<BonusData> possibleData = GetPossibleData(existingBonusTypes); // Получаем возможные бонусы для выбора
     float           sumChance    = GetSumChance   (possibleData);       // Суммируем шансы всех возможных бонусов

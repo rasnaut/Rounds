@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Diagnostics;
 using Photon.Pun;
 
 public abstract class CharacterPart : MonoBehaviourPunCallbacks
@@ -34,6 +35,8 @@ public abstract class CharacterPart : MonoBehaviourPunCallbacks
       if (!_photonView) {                         // Если _photonView не инициализирована
         _photonView = GetComponent<PhotonView>(); // Получаем компонент PhotonView
       }
+      if (!_photonView)
+        Debug.WriteLine("PhotonView not exist!");
       return _photonView; // Возвращаем полученное значение
     } 
   }

@@ -447,16 +447,25 @@ MonoBehaviour:
   _data:
   - _chance: 1
     _type: 2
+    _title: "\u0414\u0432\u043E\u0439\u043D\u043E\u0439 \u0432\u044B\u0441\u0442\u0440\u0435\u043B"
   - _chance: 0.5
     _type: 3
+    _title: "\u0422\u0440\u043E\u0439\u043D\u043E\u0439 \u0432\u044B\u0441\u0442\u0440\u0435\u043B"
   - _chance: 0.1
     _type: 4
+    _title: "\u0427\u0435\u0442\u0432\u0435\u0440\u043D\u043E\u0439 \u0432\u044B\u0441\u0442\u0440\u0435\u043B"
   - _chance: 1
     _type: 5
+    _title: "\u041C\u0430\u043B\u0435\u043D\u044C\u043A\u0438\u0435 \u0432\u0437\u0440\u044B\u0432\u043D\u044B\u0435
+      \u043F\u0430\u0442\u0440\u043E\u043D\u044B"
   - _chance: 0.5
     _type: 6
+    _title: "\u0421\u0440\u0435\u0434\u043D\u0438\u0435 \u0432\u0437\u0440\u044B\u0432\u043D\u044B\u0435
+      \u043F\u0430\u0442\u0440\u043E\u043D\u044B"
   - _chance: 0.1
     _type: 7
+    _title: "\u0411\u043E\u043B\u044C\u0448\u0438\u0435 \u0432\u0437\u0440\u044B\u0432\u043D\u044B\u0435
+      \u043F\u0430\u0442\u0440\u043E\u043D\u044B"
 --- !u!4 &990356199
 Transform:
   m_ObjectHideFlags: 0
@@ -490,6 +499,10 @@ PrefabInstance:
   m_Modification:
     m_TransformParent: {fileID: 0}
     m_Modifications:
+    - target: {fileID: 896617850635045868, guid: 91c7e6f7057aad14d810e09d431e52d1, type: 3}
+      propertyPath: sceneViewId
+      value: 2
+      objectReference: {fileID: 0}
     - target: {fileID: 2582577929879434235, guid: 91c7e6f7057aad14d810e09d431e52d1, type: 3}
       propertyPath: m_RootOrder
       value: 3
@@ -537,6 +550,10 @@ PrefabInstance:
     - target: {fileID: 3198205761234183575, guid: 91c7e6f7057aad14d810e09d431e52d1, type: 3}
       propertyPath: m_Name
       value: Location1
+      objectReference: {fileID: 0}
+    - target: {fileID: 7496568999713956344, guid: 91c7e6f7057aad14d810e09d431e52d1, type: 3}
+      propertyPath: sceneViewId
+      value: 2
       objectReference: {fileID: 0}
     m_RemovedComponents: []
   m_SourcePrefab: {fileID: 100100000, guid: 91c7e6f7057aad14d810e09d431e52d1, type: 3}

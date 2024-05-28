@@ -11,6 +11,7 @@ GameObject:
   - component: {fileID: 4356790421765556421}
   - component: {fileID: 5097881031204144481}
   - component: {fileID: 5558417917543013100}
+  - component: {fileID: 7336467092556759158}
   m_Layer: 0
   m_Name: Weapon
   m_TagString: Untagged
@@ -65,6 +66,28 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   _defaultHitPrefab: {fileID: 6597570747687438593, guid: b4f3266f343f36b4f90f669bba00e59d, type: 3}
   _explosionHitPrefab: {fileID: 8680598818964007281, guid: dcd90c4976197424b9958a7c54b6bb8c, type: 3}
+--- !u!114 &7336467092556759158
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 777745209876218728}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: aa584fbee541324448dd18d8409c7a41, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  ObservedComponentsFoldoutOpen: 1
+  Group: 0
+  prefixField: -1
+  Synchronization: 3
+  OwnershipTransfer: 0
+  observableSearch: 2
+  ObservedComponents: []
+  sceneViewId: 0
+  InstantiationId: 0
+  isRuntimeInstantiated: 0
 --- !u!1 &4437466527520575233
 GameObject:
   m_ObjectHideFlags: 0
@@ -202,7 +225,6 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: b102b394e57f5d04fb11f5a9c1e63151, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  _existingBonusTypes: 
 --- !u!114 &1932684872924067086
 MonoBehaviour:
   m_ObjectHideFlags: 0

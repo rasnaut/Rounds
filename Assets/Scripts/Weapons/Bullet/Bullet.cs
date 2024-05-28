@@ -23,6 +23,16 @@ public class Bullet : MonoBehaviour
     hit.Init(damage, _impulse);
   }
 
+  // Специальный атрибут // Для синхронизации действий игроков
+  [PunRPC]
+  public void RPCSpawnHitEffect(string propertiesJson) // Создаём эффект появления пули по сети
+  {
+    // Десериализуем JSON в объект свойств эффекта попадания
+    HitEffectProperties properties = JsonUtility.FromJson<HitEffectProperties>(propertiesJson);
+
+    // Создаём эффект попадания с этими свойствами
+    _hit.SpawnHitEffect(properties);
+  }
   private void Update() {
     if (!_photonView.IsMine) { // НОВОЕ: Если у игрока нет PhotonView
       return; // НОВОЕ: Выходим из метода
@@ -55,7 +65,18 @@ public class Bullet : MonoBehaviour
         return;                // НОВОЕ: Выходим из метода
     }
     if (collision.collider) {         // Если пуля столкнулась с коллайдером
-      _hit.Hit(collision, transform); // Вызываем у поведения метод Hit()
+      // НОВОЕ: Получаем свойства эффекта попадания
+      HitEffectProperties hitEffectProps = _hit.Hit(collision, transform);
+
+      // НОВОЕ: Если они существуют
+      if (hitEffectProps != null)
+      {
+        // НОВОЕ: Сериализуем свойства в JSON
+        string hitEffectPropsJson = JsonUtility.ToJson(hitEffectProps);
+
+        // НОВОЕ: Отправляем эти данные с помощью RPC
+        _photonView.RPC(nameof(RPCSpawnHitEffect), RpcTarget.All, hitEffectPropsJson);
+      }
       DestroyBullet();                // Вызываем метод DestroyBullet()
     }
   }

@@ -19,8 +19,8 @@ public abstract class BulletHit
     Damage  = damage;  // Задаём урон
     Impulse = impulse; // Задаём импульс
   }
-
-  public abstract void Hit(Collision collision, Transform bulletTransform);
+  public abstract HitEffectProperties Hit(Collision collision, Transform bulletTransform);
+  public abstract void SpawnHitEffect(HitEffectProperties properties); // Создаём визуальные эффекты попадания
   protected bool CheckCharacterHit(Collider collider)
   {
     CharacterHealth hitedHealth = collider.GetComponentInParent<CharacterHealth>(); // Получаем CharacterHealth у объекта столкновения

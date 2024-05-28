@@ -18,6 +18,7 @@ public abstract class Weapon : MonoBehaviour, IShootCountBonusDependent, IHitTyp
   private bool      _isReloading        ; // Флаг перезарядки
   private int       _shootCount         ; // Количество выстрелов
   private BulletHit _bulletHit          ; // Поведение при попадании
+  private PhotonView _photonView; // Переменная для работы с сетевым представлением объекта
 
   public Action<int, int> OnBulletsInRowChange; // Событие обновления пуль в магазине
   public Action           OnEndReloading;       // Событие окончания перезарядки
@@ -26,9 +27,25 @@ public abstract class Weapon : MonoBehaviour, IShootCountBonusDependent, IHitTyp
 
   public void Init() {
     _bulletSpawnPoint = GetComponentInChildren<BulletSpawnPoint>().transform; // Получаем компонент Transform для точки вылета пули
+    _photonView       = GetComponent<PhotonView>(); // НОВОЕ: Получаем компонент PhotonView
+
     FillBulletsToRow(); // Вызываем метод FillBulletsToRow()
   }
+  
+  // Специальный атрибут
+  // Для синхронизации действий игроков
+  [PunRPC]
+  public void RPCInitBullet(int bulletViewId) // Инициализируем пулю по сети
+  {
+    // Получаем компонент PhotonView
+    PhotonView bulletPhotonView = PhotonNetwork.GetPhotonView(bulletViewId);
 
+    // Получаем компонент Bullet
+    Bullet bullet = bulletPhotonView.GetComponent<Bullet>();
+
+    // Вызываем у пули метод Init()
+    bullet.Init(_damage, _bulletHit);
+  }
   public void SetActive(bool value)
   {
     gameObject.SetActive(value); // Меняем активность оружия на value
@@ -66,16 +83,18 @@ public abstract class Weapon : MonoBehaviour, IShootCountBonusDependent, IHitTyp
   // Создаём экземпляр префаба пули
   private void SpawnBullet(Bullet prefab, Transform spawnPoint, float extraAngle)
   {
-    // НОВОЕ: Создаём сетевой объект пули через PhotonNetwork
-    GameObject buleltGO = PhotonNetwork.Instantiate(prefab.name, spawnPoint.position, spawnPoint.rotation);
+    GameObject bulletGO = PhotonNetwork.Instantiate(prefab.name, spawnPoint.position, spawnPoint.rotation);
+    Bullet bullet = bulletGO.GetComponent<Bullet>();
 
-    Bullet bullet = buleltGO.GetComponent<Bullet>(); // НОВОЕ: Получаем компонент Bullet
+    Vector3 bulletEulerAngles = bullet.transform.eulerAngles;
+    bulletEulerAngles.x += extraAngle;
+    bullet.transform.eulerAngles = bulletEulerAngles;
 
-    Vector3 bulletEulerAngles    = bullet.transform.eulerAngles; // Получаем текущие углы поворота созданной пули
-    bulletEulerAngles.x         += extraAngle;                   // Прибавляем к углу по X дополнительный угол поворота
-    bullet.transform.eulerAngles = bulletEulerAngles;            // Применяем изменённые углы поворота к пуле
+    // НОВОЕ: Получаем компонент PhotonView
+    PhotonView bulletPhotonView = bullet.GetComponent<PhotonView>();
 
-    bullet.Init(_damage, _bulletHit);
+    // НОВОЕ: Вызываем RPC для инициализации пули
+    _photonView.RPC(nameof(RPCInitBullet), RpcTarget.All, bulletPhotonView.ViewID);
   }
 
   private void Update()

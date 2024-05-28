@@ -1,25 +1,20 @@
 ﻿using UnityEngine;
 using Photon.Pun;
-
+using System.Collections.Generic;
 public class GameStateChanger : BaseStateChanger
 {
-  // Префаб объекта появления игроков
-  [SerializeField] private PlayerSpawner _playerSpawnerPrefab;
+  [SerializeField] private PlayerSpawner _playerSpawnerPrefab; // Префаб объекта появления игроков
+  [SerializeField] private Location      _location           ; // Игровая локация
 
-  // Игровая локация
-  [SerializeField] private Location _location;
+  private PhotonView    _photonView        ;    // Переменная для работы с сетевым представлением объекта
+  private PlayerSpawner _localPlayerSpawner;    // Локальный объект появления игроков
+  private int           _readyCount        ;    // Количество игроков, готовых к игре
+  private int           _locationSpawnCount;    // Количество инициализированных локаций
+  private const int BonusForChooseCount = 3;    // Константа, задающая количество бонусов для выбора
+  private BonusDataAccesser _bonusDataAccesser; // Объект типа BonusDataAccesser
 
-  // Переменная для работы с сетевым представлением объекта
-  private PhotonView _photonView;
-
-  // Локальный объект появления игроков
-  private PlayerSpawner _localPlayerSpawner;
-
-  // Количество игроков, готовых к игре
-  private int _readyCount;
-
-  // Количество инициализированных локаций
-  private int _locationSpawnCount;
+  // Объект типа PlayerBonusesAccesser
+  private PlayerBonusesAccesser _playerBonusAccesser;
   public void AfterLocationSpawn()
   {
     // Отправляем RPC-сообщения всем игрокам
@@ -28,48 +23,62 @@ public class GameStateChanger : BaseStateChanger
   }
   protected override void OnInit()
   {
-    // Обнуляем начальное количество готовых игроков
-    SetReadyCount(0);
+    SetReadyCount(0);                           // Обнуляем начальное количество готовых игроков
+    _locationSpawnCount = 0;                    // Инициализируем счётчик появлений локаций значением 0
+    
+    // НОВОЕ: Находим компонент BonusDataAccesser
+    _bonusDataAccesser = FindObjectOfType<BonusDataAccesser>();
 
-    // Инициализируем счётчик появлений локаций значением 0
-    _locationSpawnCount = 0;
+    // НОВОЕ: Создаём объект PlayerBonusesAccesser
+    _playerBonusAccesser = new PlayerBonusesAccesser();
 
-    // Показываем экран ожидания игроков
-    ScreensController.ShowScreen<WaitScreen>();
+    // НОВОЕ: Инициализируем его
+    _playerBonusAccesser.Init();
 
-    // Получаем компонент PhotonView
-    _photonView = GetComponent<PhotonView>();
+    // НОВОЕ: Показываем экран выбора бонусов
+    BonusChooseScreen bonusChooseScreen = ScreensController.ShowScreen<BonusChooseScreen>();
 
-    // Вызываем удалённый метод готовности RPCSendReady()
-    // На всех подключенных устройствах
-    _photonView.RPC(nameof(RPCSendReady), RpcTarget.All);
+    // НОВОЕ: Обрабатываем событие OnOkButtonClick
+    // Вызываем метод BonusSelected()
+    bonusChooseScreen.OnOkButtonClick += BonusSelected;
+
+    // НОВОЕ: Получаем случайные бонусы
+    List<BonusData> randomBonuses = _bonusDataAccesser.GetRandomBonuses(_playerBonusAccesser.ExistingBonusTypes, BonusForChooseCount);
+
+    // НОВОЕ: Отображаем случайные бонусы
+    bonusChooseScreen.ShowBonuses(randomBonuses);
 
     // Получаем доступ к экрану обратного отсчёта
     CountDownScreen countDownScreen = ScreensController.GetScreen<CountDownScreen>();
 
     // Обрабатываем событие OnCountDownEnd
-    // Вызываем метод StartGame()
-    countDownScreen.OnCountDownEnd += StartGame;
+    countDownScreen.OnCountDownEnd += StartGame; // Вызываем метод StartGame()
   }
-  // Специальный атрибут
-  // Для синхронизации действий игроков
-  [PunRPC]
+  private void BonusSelected(BonusType? selectedType) // Вызывается при выборе бонуса
+  { 
+    // Если бонус выбран
+    if (selectedType.HasValue)
+    {
+      // Добавляем выбранный бонус
+      _playerBonusAccesser.AddBonus(selectedType.Value);
+    }
+    // Показываем экран ожидания
+    ScreensController.ShowScreen<WaitScreen>();
+
+    // Вызываем сетевую функцию готовности
+    _photonView.RPC(nameof(RPCSendReady), RpcTarget.All);
+  }
+  [PunRPC] // Специальный атрибут Для синхронизации действий игроков
   private void RPCSendReady()
   {
-    // Увеличиваем число готовых игроков на одного
-    SetReadyCount(_readyCount + 1);
-
-    // Если это число >= максимальному числу игроков в комнате
-    if (_readyCount >= PhotonNetwork.CurrentRoom.MaxPlayers)
-    {
-      // Вызываем метод PrepareGame()
-      PrepareGame();
+    SetReadyCount(_readyCount + 1); // Увеличиваем число готовых игроков на одного
+    if (_readyCount >= PhotonNetwork.CurrentRoom.MaxPlayers) { // Если это число >= максимальному числу игроков в комнате
+      PrepareGame();                                           // Вызываем метод PrepareGame()
     }
   }
   private void SetReadyCount(int value)
   {
-    // Устанавливаем текущее число готовых игроков
-    _readyCount = value;
+    _readyCount = value; // Устанавливаем текущее число готовых игроков
 
     // Вызываем метод RefreshWaitScreen()
     // Передаём в него текущее и максимальное число игроков
@@ -79,28 +88,21 @@ public class GameStateChanger : BaseStateChanger
   {
     // Получаем экран ожидания
     WaitScreen waitScreen = ScreensController.GetScreen<WaitScreen>();
-
-    // Устанавливаем там текст
-    // С текущим и максимальным числом игроков
-    waitScreen.SetCountText(current, max);
+    waitScreen.SetCountText(current, max); // Устанавливаем там текст С текущим и максимальным числом игроков
   }
   private void PrepareGame()
   {
-    // Если текущий клиент — мастер-клиент
-    if (PhotonNetwork.IsMasterClient)
-    {
-      // Вызываем метод SpawnLocation()
-      SpawnLocation();
+    if (PhotonNetwork.IsMasterClient) { // Если текущий клиент — мастер-клиент
+      SpawnLocation();                  // Вызываем метод SpawnLocation()
     }
   }
   private void SpawnLocation()
   {
-    // Если текущий клиент — мастер-клиент
-    if (PhotonNetwork.IsMasterClient)
-    {
+    if (PhotonNetwork.IsMasterClient) { // Если текущий клиент — мастер-клиент
       // Мастер-клиент создаёт объект в игре
       // Который виден всем игрокам в комнате
-      PhotonNetwork.InstantiateRoomObject(_location.name, Vector3.zero, Quaternion.identity, 0, new object[] { _photonView.ViewID });
+      PhotonNetwork.InstantiateRoomObject(_location.name, Vector3.zero, Quaternion.identity, 0, 
+        new object[] { _photonView.ViewID });
     }
   }
   // Специальный атрибут
@@ -168,11 +170,17 @@ public class GameStateChanger : BaseStateChanger
   }
   private void OnDestroy()
   {
-    // Если нет объекта контроллера экранов
-    if (!ScreensController)
+    if (!ScreensController) { // Если нет объекта контроллера экранов
+      return; // Выходим из метода
+    }
+    // НОВОЕ: Получаем экран выбора бонусов
+    BonusChooseScreen bonusChooseScreen = ScreensController.GetScreen<BonusChooseScreen>();
+
+    // НОВОЕ: Если он существует
+    if (bonusChooseScreen)
     {
-      // Выходим из метода
-      return;
+      // НОВОЕ: Отписываемся от события OnOkButtonClick
+      bonusChooseScreen.OnOkButtonClick -= BonusSelected;
     }
     // Получаем экран обратного отсчёта
     CountDownScreen countDownScreen = ScreensController.GetScreen<CountDownScreen>();

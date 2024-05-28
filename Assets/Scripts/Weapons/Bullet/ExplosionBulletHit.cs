@@ -4,7 +4,7 @@ public class ExplosionBulletHit : BulletHit
 {
   private const float HitRange = 1f;  // Константа со значением диапазона взрыва
   public ExplosionBulletHit(int finalHitType, GameObject hitPrefab) : base(finalHitType, hitPrefab) { }
-  public override void Hit(Collision collision, Transform bulletTransform)
+  public override HitEffectProperties Hit(Collision collision, Transform bulletTransform)
   {
     // Получаем массив коллайдеров объектов
     // Которые находятся в радиусе взрыва
@@ -17,11 +17,18 @@ public class ExplosionBulletHit : BulletHit
     // А также трансформу пули и точку столкновения
     CheckPhysicObjectHit(collidersInRange, bulletTransform, collision.contacts[0].point);
 
-    // Создаём экземпляр эффекта попадания
-    // В точке столкновения без вращения
-    GameObject hitSample = GameObject.Instantiate(HitPrefab, collision.contacts[0].point, Quaternion.identity);
+    // НОВОЕ: Возвращаем свойства эффекта попадания
+    return new HitEffectProperties(collision.contacts[0].point, Quaternion.identity);
+  }
+  public override void SpawnHitEffect(HitEffectProperties properties) // Переопределяем метод SpawnHitEffect()
+  {
+    // Создаём объект с визуальными эффектами попадания —
+    // В заданной точке и с вращением
+    GameObject hitSample = GameObject.Instantiate(HitPrefab, properties.Point, properties.Rotation);
 
-    hitSample.transform.localScale = Vector3.one * FinalHitType; // Изменяем размер взрыва В зависимости от уровня бонуса
+    // Изменяем размер взрыва
+    // В зависимости от бонуса
+    hitSample.transform.localScale = Vector3.one * FinalHitType;
   }
   protected bool CheckCharacterHit(Collider[] colliders)
   {

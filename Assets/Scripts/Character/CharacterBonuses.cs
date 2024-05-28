@@ -1,5 +1,4 @@
 ﻿using System.Collections.Generic;
-using UnityEngine;
 using Photon.Pun;
 using System.Collections;
 
@@ -7,59 +6,28 @@ using System.Collections;
 // Наследуем его от CharacterPart
 public abstract class CharacterBonuses : CharacterPart
 {
-  [SerializeField] private List<BonusType> _existingBonusTypes; // Список активированных бонусов
+  private List<BonusType> _existingBonusTypes = new List<BonusType>();
 
   private List<BonusApplier> _bonusAppliers = new List<BonusApplier>() {   // Массив объектов применения бонусов
     new ShootCountBonusApplier() // Создаём экземпляр объекта Для подсчёта количества выстрелов
   };
-  // Добавляем бонус в список активированных
-  public void AddBonus(BonusType type) {
-    _existingBonusTypes.Add(type); // Вызываем у списка метод Add()
-  }
-  // Вызывается, когда свойства игрока обновляются по сети
-  public override void OnPlayerPropertiesUpdate(Photon.Realtime.Player targetPlayer, 
-                                                ExitGames.Client.Photon.Hashtable changedProps)
+
+  protected override void OnInit()
   {
-    if (  PhotonView                        // Если у объекта есть компонент PhotonView
-      && !PhotonView.IsMine                 // И он не принадлежит текущему игроку
-      && targetPlayer == PhotonView.Owner)  // И его владелец — целевой игрок То есть у него обновились свойства
-    {
-      _existingBonusTypes.Clear(); // Очищаем список собранных бонусов
+    _existingBonusTypes.Clear(); // Очищаем список собранных бонусов
 
-      for (int i = 0; i < changedProps.Count; i++)     // Проходим по изменённым свойствам
-      {   
-        var element = changedProps[$"BonusType{i}"];   // Извлекаем из каждого элемент С индексом, указывающим на тип бонуса
-        if (element != null) {                         // Если элемент не пустой
-          _existingBonusTypes.Add((BonusType)element); // Добавляем его в список собранных бонусов Приводя его к типу BonusType
-        }
+    // Получаем кастомные свойства контроллера в сетевой игре
+    ExitGames.Client.Photon.Hashtable props = PhotonView.Controller.CustomProperties;
+
+    for (int i = 0; i < props.Count; i++) { // Проходим по всем свойствам
+      // Пытаемся получить значение свойства
+      // Под ключом BonusType с индексом i
+      var element = props[$"BonusType{i}"];
+      if (element != null) {                         // Если значение найдено (не равно null)
+        _existingBonusTypes.Add((BonusType)element); // Добавляем тип бонуса в список
       }
-      ApplyBonuses(); // Вызываем метод ApplyBonuses()
     }
-  }
-  protected override void OnInit() 
-  {
-    if ( PhotonView          // Если у объекта есть компонент PhotonView
-      && PhotonView.IsMine)  // И он принадлежит текущему игроку
-    {
-      ApplyBonuses(); // Вызываем метод ApplyBonuses()
-
-      // Создаём специальную хеш-таблицу
-      // Она будет хранить пары «ключ-значение»
-      // Для сетевых свойств игрока
-      ExitGames.Client.Photon.Hashtable hashtable = new ExitGames.Client.Photon.Hashtable();
-
-      // Проходим по списку собранных бонусов
-      for (int i = 0; i < _existingBonusTypes.Count; i++) {
-        // Добавляем для каждого «ключ-значение»
-        // Здесь ключ — строка типа BonusType{i}
-        // А значение — текущий тип бонуса из списка
-        hashtable.Add($"BonusType{i}", _existingBonusTypes[i]);
-      }
-      // Устанавливаем хеш-таблицу
-      // Как пользовательские свойства локального игрока
-      // Обновляя сетевую информацию о собранных бонусах
-      PhotonNetwork.LocalPlayer.SetCustomProperties(hashtable);
-    }
+    ApplyBonuses(); // Вызываем метод ApplyBonuses()
   }
 
   private void ApplyBonuses()
