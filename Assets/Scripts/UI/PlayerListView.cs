@@ -16,6 +16,7 @@ public class PlayerListView : MonoBehaviour
   }
   public void AddPlayer(Photon.Realtime.Player newPlayer)
   {
+    Debug.Log("Player List View Add Player");
     // Создаём новый элемент интерфейса для заданного игрока
     PlayerListElement element = Instantiate(_playerListElementPrefab, _playerListContainer);
     element.SetPlayer(newPlayer);     // Ставим данные игрока в элемент интерфейса

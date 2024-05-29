@@ -9,6 +9,7 @@ public class RoomController : MonoBehaviourPunCallbacks // Наследуем Ro
 
   public override void OnEnable() // Вызывается, когда MonoBehaviour включен
   {
+    Debug.Log("RoomController OnEnable()");
     base.OnEnable(); //  Вызываем базовую реализацию метода
 
     // Обрабатываем событие sceneLoaded
@@ -17,11 +18,13 @@ public class RoomController : MonoBehaviourPunCallbacks // Наследуем Ro
   }
   public override void OnDisable() // Вызывается, когда MonoBehaviour отключен
   {
+    Debug.Log("RoomController OnDisable()");
     base.OnDisable();                               // Вызываем базовую реализацию метода
     SceneManager.sceneLoaded -= SpawnPlayerSpawner; // Отписываемся от события sceneLoaded
   }
   private void Awake()     // Выполняется первым в MonoBehaviour
   {
+    Debug.Log("RoomController Awake");
     if (Instance) {        // Если экземпляр класса существует
       Destroy(gameObject); // Уничтожаем этот объект
     }
@@ -33,8 +36,10 @@ public class RoomController : MonoBehaviourPunCallbacks // Наследуем Ro
   // Запускаем появление игроков после загрузки сцены
   private void SpawnPlayerSpawner(Scene scene, LoadSceneMode loadSceneMode)
   {
+    Debug.Log("RoomController SpawnPlayerSpawner()");
     if (scene.name == ScenesLoader.GameSceneName) // Если мы в игровой сцене
     {
+      Debug.Log("RoomController SPAAAAAAAAAAWN");
       // Создаём объект появления игроков через Photon
       PhotonNetwork.Instantiate(_playerSpawner.name, Vector3.zero, Quaternion.identity);
     }
