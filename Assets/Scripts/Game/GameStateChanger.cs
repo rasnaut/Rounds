@@ -5,13 +5,14 @@ public class GameStateChanger : BaseStateChanger
 {
   [SerializeField] private PlayerSpawner _playerSpawnerPrefab; // Префаб объекта появления игроков
   [SerializeField] private Location      _location           ; // Игровая локация
+  [SerializeField] private int BonusForChooseCount = 3;    // Константа, задающая количество бонусов для выбора
 
   public static int ReadyCount;    // Количество игроков, готовых к игре
 
   private PhotonView    _photonView        ;    // Переменная для работы с сетевым представлением объекта
   private PlayerSpawner _localPlayerSpawner;    // Локальный объект появления игроков
   private int           _locationSpawnCount;    // Количество инициализированных локаций
-  private const int BonusForChooseCount = 3;    // Константа, задающая количество бонусов для выбора
+  //private const int BonusForChooseCount = 3;    // Константа, задающая количество бонусов для выбора
   private BonusDataAccesser _bonusDataAccesser; // Объект типа BonusDataAccesser
 
   // Объект типа PlayerBonusesAccesser
@@ -25,8 +26,8 @@ public class GameStateChanger : BaseStateChanger
   protected override void OnInit()
   {
     RefreshWaitScreen();
-    _locationSpawnCount = 0;                    // Инициализируем счётчик появлений локаций значением 0
-    
+    _photonView = GetComponent<PhotonView>();
+
     // НОВОЕ: Находим компонент BonusDataAccesser
     _bonusDataAccesser = FindObjectOfType<BonusDataAccesser>();
 
@@ -88,6 +89,10 @@ public class GameStateChanger : BaseStateChanger
     // Показываем экран ожидания
     ScreensController.ShowScreen<WaitScreen>();
 
+    if(!_photonView)
+    {
+      Debug.Log("_photonView null!");
+    }
     // Вызываем сетевую функцию готовности
     _photonView.RPC(nameof(RPCSendReady), RpcTarget.All);
   }

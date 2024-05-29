@@ -255,7 +255,19 @@ MonoBehaviour:
   m_TargetGraphic: {fileID: 7221192805266093530}
   m_OnClick:
     m_PersistentCalls:
-      m_Calls: []
+      m_Calls:
+      - m_Target: {fileID: 9056299804549760702}
+        m_TargetAssemblyTypeName: BonusChooseListElement, Assembly-CSharp
+        m_MethodName: SelectButtonClick
+        m_Mode: 1
+        m_Arguments:
+          m_ObjectArgument: {fileID: 0}
+          m_ObjectArgumentAssemblyTypeName: UnityEngine.Object, UnityEngine
+          m_IntArgument: 0
+          m_FloatArgument: 0
+          m_StringArgument: 
+          m_BoolArgument: 0
+        m_CallState: 2
 --- !u!1 &3573754127542544295
 GameObject:
   m_ObjectHideFlags: 0
@@ -311,8 +323,8 @@ MonoBehaviour:
   _backImage: {fileID: 7221192805266093530}
   _titleText: {fileID: 5189018557664467687}
   _selectButton: {fileID: 6967917732110028819}
-  _selectedColor: {r: 1, g: 1, b: 1, a: 0}
-  _unselectedColor: {r: 1, g: 1, b: 1, a: 0}
+  _selectedColor: {r: 0.44701913, g: 0.9811321, b: 0.43040225, a: 0.77254903}
+  _unselectedColor: {r: 1, g: 0.4198113, b: 0.4198113, a: 0.3529412}
 --- !u!1 &6734185319222614743
 GameObject:
   m_ObjectHideFlags: 0

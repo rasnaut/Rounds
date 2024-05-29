@@ -3,6 +3,7 @@ using UnityEngine.UI;
 using TMPro;
 using System;
 
+
 public class BonusChooseListElement : MonoBehaviour
 {
   [SerializeField] private Image           _backImage      ; // Фоновая картинка
@@ -16,15 +17,10 @@ public class BonusChooseListElement : MonoBehaviour
 
   public Action<BonusChooseListElement> OnSelectButtonClick; // Событие нажатия на кнопку выбора
   
-
-  // Устанавливаем бонус
-  public void SetBonus(BonusType bonusType, string title)
+  public void SetBonus(BonusType bonusType, string title) // Устанавливаем бонус
   {
-    // Задаём тип
-    _bonusType = bonusType;
-
-    // Задаём заголовок
-    _titleText.text = title;
+    _bonusType = bonusType; // Задаём тип
+    _titleText.text = title; // Задаём заголовок
   }
   // Устанавливаем выбранный цвет
   public void SetSelected(bool value)
@@ -35,12 +31,18 @@ public class BonusChooseListElement : MonoBehaviour
   // Вызывается при запуске игры
   private void Start()
   {
+    Debug.Log("Button " + _titleText.text + " Created");
     // Обрабатываем нажатие на кнопку выбора
     _selectButton.onClick.AddListener(SelectButtonClick);
+    //_selectButton.onClick.AddListener(() => { OnSelectButtonClick?.Invoke(this); });
+
+    int eventCount = _selectButton.onClick.GetPersistentEventCount();
+    Debug.Log("Number of listeners added to button: " + eventCount);
   }
   // Вызывается при нажатии на кнопку выбора
-  private void SelectButtonClick()
+  public void SelectButtonClick()
   {
+    Debug.Log("SelectButtonClick");
     // Вызываем событие OnSelectButtonClick
     // Передаём в него текущий элемент
     OnSelectButtonClick?.Invoke(this);

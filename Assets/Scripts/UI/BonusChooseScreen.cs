@@ -29,6 +29,7 @@ public class BonusChooseScreen : BaseScreen
       AddBonusElement(randomBonuses[i]);            // Добавляем каждый в контейнер
     }
     SelectFirstBonusElement();  // Вызываем метод SelectFirstBonusElement()
+    OkButtonClick();
   }
   private void SetActiveAllBonusTaken(bool value)
   {
@@ -85,8 +86,9 @@ public class BonusChooseScreen : BaseScreen
     // Обрабатываем нажатие на кнопку ОК
     _okButton.onClick.AddListener(OkButtonClick);
   }
-  private void OkButtonClick()
+  public void OkButtonClick()
   {
+    Debug.Log("OkButtonClick!");
     // Вызываем событие OnOkButtonClick
     // Передаём в него выбранный тип бонуса
     OnOkButtonClick?.Invoke(_selectedBonusType);
